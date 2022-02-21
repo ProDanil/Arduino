@@ -21,8 +21,8 @@ struct Display{
 	unsigned long time;
 	int sec;
 	bool flag;
-	byte select_game_pos;
-	byte select_level_pos;
+	byte select_game_pos
+;	byte select_level_pos;
 	int sum_step;
 	byte game_list = 1;
 	char sel_game;
@@ -35,6 +35,10 @@ struct Display{
 		lcd.setCursor(0,0); // Установка курсора в начало первой строки
 		lcd.print("Hello Everyone!");
 	};
+
+	void menu(){
+		lcd.blink();
+	}
 
 	void timer_start(){
         time = millis();
@@ -152,7 +156,7 @@ struct Display{
 		}
 	};
 
-	void step_count(bool step){
+	void step_counter(bool step){
 		String step10 = "0";
 		String step100 = "0";
 		if(step){
