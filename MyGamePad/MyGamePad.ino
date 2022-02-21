@@ -57,6 +57,7 @@ long blink_timer = 0;
 bool gamer_high = true;
 bool timer_flag;
 bool first_start;
+bool step;
 
 enum NumLev {
 	START,
@@ -331,6 +332,7 @@ private:
   		if (!bitRead(levelMap[matrNum][height],numBit)){
   		  x = x - 1; 
   		  y = y - 1;
+  		  step = true;
   		}
   		
   		if (x < 0){
@@ -366,6 +368,7 @@ private:
   		if (!bitRead(levelMap[matrNum][height],numBit)){
     		x = x - 1; 
     		y = y + 1;
+    		step = true;
   		}
   
   		if (x < 0){
@@ -409,6 +412,7 @@ private:
   		if (!bitRead(levelMap[matrNum][height],numBit)){
     		x = x + 1; 
     		y = y + 1;
+    		step = true;
   		}
 
   		if (y > 7){
@@ -448,6 +452,7 @@ private:
 	  	if (!bitRead(levelMap[matrNum][height],numBit)){
 	    	x = x + 1; 
 	    	y = y - 1;
+	    	step = true;
 	  	}
 
 	  	if (y < 0){
@@ -474,6 +479,7 @@ private:
   
   		if (!bitRead(levelMap[matrNum][y],numBit)){
     		x = x - 1;
+    		step = true;
   		}
   
   		if (x < 0){
@@ -506,6 +512,7 @@ private:
 
   		if (!bitRead(levelMap[matrNum][y],numBit)){
     		x = x + 1;
+    		step = true;
   		}
 
 	  	matrix.drawPixel(x, y, HIGH);
@@ -524,6 +531,7 @@ private:
   
   		if (!bitRead(levelMap[matrNum][height],x-8*matrNum)){
     		y = y - 1;
+    		step = true;
   		}
 
   		if (y < 0){
@@ -546,6 +554,7 @@ private:
   
   		if (!bitRead(levelMap[matrNum][height],x-8*matrNum)){
     		y = y + 1;
+    		step = true;
   		}
   		
   		if (y > 7){
@@ -576,6 +585,7 @@ void loop(){
     	if (go_menu){
       		go_menu = false;
       		num_lev = START;
+      		display.menu();
     	}
   	}
 
@@ -605,6 +615,8 @@ void loop(){
             timer_flag = true;
         }
    		move.go();
+   		display.step_counter(step);
+   		step = false;
  	}
 
     if(timer_flag){
