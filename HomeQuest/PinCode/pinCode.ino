@@ -1,8 +1,35 @@
+/*
+ * --------------------------------------------------------------------------------------------------------------------
+ * Электронный замок на матричной клавиатуре 4х4
+ * --------------------------------------------------------------------------------------------------------------------
+ * 
+ * Typical pin layout used:
+ * -----------------------------------------------------------------------------------------
+ *             Arduino
+ *             Uno
+ * Signal      Pin
+ * -----------------------------------------------------------------------------------------
+ * COL 4       11         
+ * COL 3       10  
+ * COL 2       9
+ * COL 1       8
+ * ROW 1       7
+ * ROW 2       6
+ * ROW 3       5
+ * ROW 4       4   
+ * -----------------------------------------------------------------------------------------
+ * SERVO       3
+ * RED LED     2
+ * GREEN LED   12
+ * -----------------------------------------------------------------------------------------
+ */
+
 #include <Keypad.h>
 #include <Servo.h>
 
 const byte ROWS = 4;
 const byte COLS = 4;
+constexpr uint8_t SERVO_PIN {3};
 constexpr uint8_t RED_PIN {2};
 constexpr uint8_t GREEN_PIN {12};
 const String pin_code = "1234";
@@ -22,7 +49,7 @@ Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 Servo servo;
 
 
-void open(){
+void unlock(){
   Serial.println("*** Доступ разрешён ***");
   digitalWrite(GREEN_PIN, HIGH);
   servo.write(175);
@@ -32,7 +59,7 @@ void open(){
 }
 
 
-void close(){
+void lock(){
   Serial.println("*** Неверный пароль ***");
   for (int i = 0; i < 3; i++){
     digitalWrite(RED_PIN, HIGH);
@@ -47,7 +74,7 @@ void setup() {
   Serial.begin(9600);
   pinMode(RED_PIN, OUTPUT);
   pinMode(GREEN_PIN, OUTPUT);
-  servo.attach(3);
+  servo.attach(SERVO_PIN);
   delay(1000);
   servo.write(5);
 }
@@ -66,9 +93,9 @@ void loop() {
 
   if (in_code.length() == pin_code.length()){
     if (in_code == pin_code){
-      open();
+      unlock();
     } else{
-      close();
+      lock();
     }
     in_code = "";
   }
