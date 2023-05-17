@@ -1,3 +1,22 @@
+/*
+ * --------------------------------------------------------------------------------------------------------------------
+ * Электронный замок с использованием ИК-пульта
+ * --------------------------------------------------------------------------------------------------------------------
+ * 
+ * Typical pin layout used:
+ * -----------------------------------------------------------------------------------------
+ *             Arduino
+ *             Nano v3
+ * Signal      Pin
+ * -----------------------------------------------------------------------------------------
+ * RECV        D2         
+ * -----------------------------------------------------------------------------------------
+ * BUZZER      D9
+ * RED LED     D4
+ * GREEN LED   D5
+ * -----------------------------------------------------------------------------------------
+ */
+
 #include <IRremote.hpp> 
 
 constexpr uint8_t RECV_PIN {2};             // указываем вывод, к которому подключен ИК приёмник 
@@ -34,17 +53,12 @@ uint16_t irReceive() {
 void myTone(uint32_t i, uint32_t t){ 
   t += millis(); 
   analogWrite(BUZZER_PIN, i);
-  while (t > millis()){
-    // digitalWrite(BUZZER_PIN, HIGH); 
-    // delayMicroseconds(500); 
-    // digitalWrite(BUZZER_PIN, LOW); 
-    // delayMicroseconds(500);
-  } 
+  while (t > millis());
   analogWrite(BUZZER_PIN, 0);
 }
 
 
-void open(){
+void unlock(){
   for (int i = 0; i < 10; i++){
     digitalWrite(GREEN_PIN, HIGH);
     myTone(200, 200);
@@ -54,7 +68,7 @@ void open(){
 }
 
 
-void close(){
+void lock(){
   digitalWrite(RED_PIN, HIGH);
   myTone(200, 1000);
   delay(1000);
@@ -95,8 +109,6 @@ void loop()
       result -= 16;
       myTone(100, 100);
       delay(100);
-      // Serial.print("Нажата кнопка ");
-      // Serial.println(result);
       in_code += String(result);
       Serial.print("ВВОД: ");
       Serial.println(in_code);  
@@ -108,10 +120,10 @@ void loop()
   if (in_code.length() == pin_code.length()){
     if (in_code == pin_code){
       Serial.println("*** Доступ разрешён ***");
-      open();
+      unlock();
     } else{
       Serial.println("*** Неверный пароль ***");
-      close();
+      lock();
     }
     in_code = "";
   }
